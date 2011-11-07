@@ -1,0 +1,16 @@
+# Handle ICMP traffic.
+
+# Create ICMP Chain
+$ipt4 -N ICMP
+$ipt6 -N ICMP
+
+# Try ICMP Traffic on the ICMP Chain (and automatically return)
+$ipt4 -A INPUT  -p icmp -j ICMP
+$ipt6 -A INPUT  -p icmp -j ICMP
+
+$ipt4 -A OUTPUT -p icmp -j ICMP
+$ipt6 -A OUTPUT -p icmp -j ICMP
+
+# Rules for ICMP Traffic
+$ipt4 -A ICMP -j ACCEPT
+$ipt6 -A ICMP -j ACCEPT

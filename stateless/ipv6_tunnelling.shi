@@ -1,0 +1,6 @@
+# Handle tunnelling of IPv6 over IPv4.
+# Ref:
+# http://en.wikipedia.org/wiki/IPv6#Transition_mechanisms
+
+source stateless/ipv6_tunnelling_isatap.shi
+source stateless/ipv6_tunnelling_teredo.shi

@@ -1,0 +1,29 @@
+# Handle our Own Host's IP Traffic.
+
+# Create Own Host Chain
+$ipt4 -N OWN_HOST
+$ipt6 -N OWN_HOST
+
+# Try traffic on the Bad Sources Chain (and automatically return)
+$ipt4 -A INPUT -j OWN_HOST
+$ipt6 -A INPUT -j OWN_HOST
+
+$ipt4 -A OUTPUT -j OWN_HOST
+$ipt6 -A OUTPUT -j OWN_HOST
+
+# Block incoming traffic allegedly from our own host
+$ipt4 -A OWN_HOST -i $ext_interf      --source   $ipv4_ext_addr_my -j REJECT
+$ipt6 -A OWN_HOST -i $ext_interf      --source   $ipv6_ext_addr_my -j REJECT
+
+# Block incoming traffic allegedly not to our own host
+$ipt4 -A OWN_HOST -i $ext_interf --destination ! $ipv4_ext_addr_my -j REJECT
+$ipt6 -A OWN_HOST -i $ext_interf --destination ! $ipv6_ext_addr_my -j REJECT
+
+# Block outgoing traffic allegedly to our own host
+$ipt4 -A OWN_HOST -o $ext_interf --destination   $ipv4_ext_addr_my -j REJECT
+$ipt6 -A OWN_HOST -o $ext_interf --destination   $ipv6_ext_addr_my -j REJECT
+
+# Block outgoing traffic allegedly not from our own host
+$ipt4 -A OWN_HOST -o $ext_interf      --source ! $ipv4_ext_addr_my -j REJECT
+$ipt6 -A OWN_HOST -o $ext_interf      --source ! $ipv6_ext_addr_my -j REJECT
+

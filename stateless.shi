@@ -1,0 +1,14 @@
+source stateless/fragment.shi
+source stateless/invalid.shi
+source stateless/loopback.shi
+source stateless/broadcast.shi
+source stateless/bad_sources.shi
+source stateless/own_host.shi
+source stateless/tcp_flags.shi
+source stateless/ipv6_tunnelling.shi
+source stateless/icmp.shi
+source stateless/remote.shi
+
+# Block all forwarding requests
+$ipt4 -A FORWARD -j REJECT
+$ipt6 -A FORWARD -j REJECT

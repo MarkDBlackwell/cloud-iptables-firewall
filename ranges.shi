@@ -1,0 +1,19 @@
+# The following are per:
+# http://en.wikipedia.org/wiki/Reserved_IP_addresses
+
+ipv4_all_zeros="0.0.0.0/32"
+ipv4_limited_broadcast="255.255.255.255/32"
+
+ipv4_subnet_broadcast="0.0.0.0/8" # Includes all_zeros.
+ipv4_subnet_private1="10.0.0.0/8"
+ipv4_local_loopback="127.0.0.0/8"
+ipv4_subnet_autoconfiguration="169.254.0.0/16"
+ipv4_subnet_private2="172.16.0.0/12"
+ipv4_subnet_test1="192.0.2.0/24"
+ipv4_global_6to4_anycast="192.88.99.0/24"
+ipv4_subnet_private3="192.168.0.0/16"
+ipv4_private_multi_subnet_test="198.18.0.0/15"
+ipv4_subnet_test2="198.51.100.0/24"
+ipv4_subnet_test3="203.0.113.0/24"
+ipv4_global_multicast="224.0.0.0/4"
+ipv4_global_future="240.0.0.0/4" # Includes limited_broadcast.

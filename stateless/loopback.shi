@@ -1,0 +1,9 @@
+# Handle Loopback Interface traffic.
+
+# On the Loopback Interface, allow IPv4 traffic only both to and from my external IP
+$ipt4 -A INPUT  -i $loopback_interf -s $ipv4_ext_addr_my -d $ipv4_ext_addr_my -j ACCEPT
+$ipt4 -A OUTPUT -o $loopback_interf -s $ipv4_ext_addr_my -d $ipv4_ext_addr_my -j ACCEPT
+
+# Block everything else
+$ipt4 -A INPUT  -i $loopback_interf -j REJECT
+$ipt4 -A OUTPUT -o $loopback_interf -j REJECT

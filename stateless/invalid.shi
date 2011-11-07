@@ -1,0 +1,4 @@
+# Handle Traffic in the INVALID state.
+
+$ipt4 -A INPUT -m state --state INVALID -j REJECT
+$ipt6 -A INPUT -m state --state INVALID -j REJECT

@@ -1,0 +1,25 @@
+# Handle Traffic with Bad Flags.
+
+# Create Bad TCP Flags Chain
+$ipt4 -N TCP_FLAGS
+$ipt6 -N TCP_FLAGS
+
+# Try TCP Traffic on the Bad Flags Chain (and automatically return)
+$ipt4 -A INPUT -p tcp -j TCP_FLAGS
+$ipt6 -A INPUT -p tcp -j TCP_FLAGS
+
+$ipt4 -A OUTPUT -p tcp -j TCP_FLAGS
+$ipt6 -A OUTPUT -p tcp -j TCP_FLAGS
+
+# Rules for traffic with bad flags
+# To use extension, 'tcp-flags', must re-specify, '-p tcp'.
+$ipt4 -A TCP_FLAGS -p tcp --tcp-flags SYN,FIN SYN,FIN -j REJECT
+$ipt4 -A TCP_FLAGS -p tcp --tcp-flags SYN,RST SYN,RST -j REJECT
+$ipt4 -A TCP_FLAGS -p tcp --tcp-flags SYN,FIN,PSH SYN,FIN,PSH -j REJECT
+$ipt4 -A TCP_FLAGS -p tcp --tcp-flags SYN,FIN,RST SYN,FIN,RST -j REJECT
+$ipt4 -A TCP_FLAGS -p tcp --tcp-flags SYN,FIN,RST,PSH SYN,FIN,RST,PSH -j REJECT
+$ipt4 -A TCP_FLAGS -p tcp --tcp-flags FIN FIN -j REJECT
+$ipt4 -A TCP_FLAGS -p tcp --tcp-flags ALL NONE -j REJECT
+$ipt4 -A TCP_FLAGS -p tcp --tcp-flags ALL ALL -j REJECT
+$ipt4 -A TCP_FLAGS -p tcp --tcp-flags ALL FIN,URG,PSH -j REJECT # Nmap:Xmas
+$ipt4 -A TCP_FLAGS -p tcp --tcp-flags ALL SYN,RST,ACK,FIN,URG -j REJECT # Merry Xmas

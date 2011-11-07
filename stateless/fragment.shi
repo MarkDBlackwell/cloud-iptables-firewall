@@ -1,0 +1,12 @@
+# Handle fragmented traffic.
+
+# I don't know if I have the connection-tracking kernel-module, 'conntrack', so I'll block fragments and let ICMP adjust packet sizes.
+
+$ipt4 -A INPUT --fragment -j REJECT
+$ipt6 -A INPUT --fragment -j REJECT
+
+$ipt4 -A OUTPUT --fragment -j REJECT
+$ipt6 -A OUTPUT --fragment -j REJECT
+
+$ipt4 -A FORWARD --fragment -j REJECT
+$ipt6 -A FORWARD --fragment -j REJECT

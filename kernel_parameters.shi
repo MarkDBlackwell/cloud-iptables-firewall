@@ -1,0 +1,52 @@
+# Set Kernel Parameters.
+
+# Set Kernel Parameters for IPv6
+# Lock down IPv6
+
+# Disable all IPv6 packet forwarding
+$sysctl6 -w net/ipv6/conf/all/forwarding="0"
+
+# Don't accept Router Advertisements
+$sysctl6 -w net/ipv6/conf/eth0/accept_ra="0"
+
+# Don't accept Redirects
+$sysctl6 -w net/ipv6/conf/eth0/accept_redirects="0"
+
+# Send no Duplicate Address Detection probes
+$sysctl6 -w net/ipv6/conf/eth0/dad_transmits="0"
+
+# Send no Router Solicitations
+$sysctl6 -w net/ipv6/conf/eth0/router_solicitations="0"
+
+
+# Set Kernel Parameters for IPv4
+# Allow IPv4
+
+# Don't accept Redirects
+$sysctl4 -w net/ipv4/conf/all/accept_redirects="0"
+
+# Don't accept source-routed packets
+$sysctl4 -w net/ipv4/conf/all/accept_source_route="0"
+
+# Log packets from impossible addresses
+$sysctl4 -w net/ipv4/conf/all/log_martians="1"
+
+# Use reverse-path filtering
+$sysctl4 -w net/ipv4/conf/all/rp_filter="1"
+
+# Don't ignore all ICMP echo requests
+$sysctl4 -w net/ipv4/icmp_echo_ignore_all="0"
+
+# Ignore ICMP sent to broadcast or multicast addresses
+$sysctl4 -w net/ipv4/icmp_echo_ignore_broadcasts="1"
+
+# Don't ignore bogus error responses to broadcasts
+$sysctl4 -w net/ipv4/icmp_ignore_bogus_error_responses="0"
+
+# Disallow forwarding (VM's have only one interface and don't forward packets).
+$sysctl4 -w net/ipv4/ip_forward="0"
+
+# Insulate from Denial of Service attack using SYN flooding.
+# Use state- and sequence-encoded SYN/ACK packets.
+$sysctl4 -w net/ipv4/tcp_syncookies="1"
+
