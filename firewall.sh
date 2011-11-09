@@ -4,7 +4,7 @@
 # Dates:
 # (mdb) Oct 30, 2011: Create.
 
-# Firewall script for my VM, which runs Debian lenny.
+# Firewall script for a VM running Debian lenny.
 # Tested on Linux kernel 2.6.18.8.
 
 # Usage example:
@@ -18,8 +18,8 @@ source ./ranges.shi
 #   ipv4_ext_addr_my="<IP address (ipv4)>"
 #   ipv6_ext_addr_my="<IP address (ipv6), if any>"
 
-# Authorized remote IP's (through the External Interface)
-#   my_remote_ip="<IP address (ipv4)>"
+# Authorized Remote IP's (through the External Interface)
+#   ipv4_authorized_remote_ips="<space-separated list of (IPv4) IP addresses>"
 
 if test -f ./unique.shi
 then

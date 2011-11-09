@@ -1,6 +1,10 @@
-# Handle my remote IP.
+# Handle authorized remote IP's.
 
-# Add SSH port 22, and whatever you want.
+# Add whatever other ports you want.
 
-$ipt4 -A INPUT  -p tcp -i $ext_interf      --source $my_remote_ip --dport 22 -j ACCEPT
-$ipt4 -A OUTPUT -p tcp -o $ext_interf --destination $my_remote_ip --sport 22 -j ACCEPT
+# Open SSH port 22
+for r in $ipv4_authorized_remote_ips
+do
+  $ipt4 -A INPUT  -p tcp -i $ext_interf      --source $r --dport 22 -j ACCEPT
+  $ipt4 -A OUTPUT -p tcp -o $ext_interf --destination $r --sport 22 -j ACCEPT
+done
