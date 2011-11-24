@@ -4,9 +4,9 @@ Firewall script for a cloud instance running Debian, using iptables.
 
 Legal note: THIS INFORMATION IS FOR EDUCATIONAL PURPOSES ONLY; I SHALL NOT BE HELD RESPONSIBLE FOR ANY DAMAGES POSSIBLY INCURRED!
 
-Firewalling IPv6 traffic is a concern, either now or in the future when IPv6 becomes available to a VM. Part of this concern is any IPv6 traffic tunnelled through IPv4 (either by ISATAP or Microsoft's Teredo).
+Firewalling IPv6 traffic is a concern, either now or in the future when IPv6 becomes available to a VM. Part of this concern is any IPv6 traffic tunnelled through IPv4 (either by ISATAP or by Microsoft's Teredo).
 
-Generally (but I have not tested this), IPv6 traffic protection involves the same commands as IPv4, but given to a different program. Therefore, this firewall script attempts to work whether or not you have IPv6 (however, untested). If you have IPv6, it will attempt to include it.
+Generally (but I have not tested this), IPv6 traffic protection involves the same commands as IPv4, but given to a different program. Therefore, this firewall script attempts to work whether or not you have IPv6 (however, this is untested). If you have IPv6, it will attempt to include it.
 
 ##Requirements:
 
@@ -16,14 +16,14 @@ First, make sure you have installed the Debian package, 'iptables':
 $ aptitude install iptables
 ```
 
-Now you can lock down your system, by:</br>
+Now you can lock down your system, by:<br />
 Drop everything (all packets; or emergency halt function, in case of attack):
 
 ```bash
 $ /etc/init.d/iptables halt
 ```
 
-If for any reason (before finishing) you need to access the Internet, just:</br>
+If for any reason (before finishing) you need to access the Internet, just:<br />
 Clear the firewall (and accept everything):
 
 ```bash
@@ -36,7 +36,7 @@ Create the directory used (by iptables) for rule sets. (This may not exist, in o
 $ mkdir /var/lib/iptables
 ```
 
-To automatically at boot start the iptables firewall service (which reloads the last saved, 'active' rule set):
+To automatically at boot start the iptables firewall service (reloading the last saved, 'active' rule set):
 
 ```bash
 $ ln -si --no-dereference ../init.d/iptables /etc/rcS.d/S40iptables
