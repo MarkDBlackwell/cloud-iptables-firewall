@@ -1,0 +1,14 @@
+# DNS Rules
+
+dns_protocols="udp tcp"
+
+for p in $dns_protocols
+do
+#  $ipt4 -A OUTPUT -o $ext_interf -p $p --dport 53 -j LOG
+  $ipt4 -A OUTPUT -o $ext_interf -p $p --dport 53 --destination $dns_server -m state --state NEW,ESTABLISHED -j ACCEPT
+  $ipt6 -A OUTPUT -o $ext_interf -p $p --dport 53 --destination $dns_server -m state --state NEW,ESTABLISHED -j ACCEPT
+
+#  $ipt4 -A INPUT  -i $ext_interf -p $p --sport 53 -j LOG
+  $ipt4 -A INPUT  -i $ext_interf -p $p --sport 53 --source $dns_server -m state --state     ESTABLISHED -j ACCEPT
+  $ipt6 -A INPUT  -i $ext_interf -p $p --sport 53 --source $dns_server -m state --state     ESTABLISHED -j ACCEPT
+done

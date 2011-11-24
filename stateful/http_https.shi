@@ -1,0 +1,17 @@
+# HTTP and HTTPS Rules
+# TCP Rules
+
+# http://stackoverflow.com/questions/2957757/how-can-an-application-use-port-80-http-without-conflicting-with-browsers
+
+http_https_ports="80 443"
+
+for r in $http_https_ports
+do
+#  $ipt4 -A OUTPUT -o $ext_interf -p tcp --dport $r -j LOG
+  $ipt4 -A OUTPUT -o $ext_interf -p tcp --dport $r -m state --state NEW,ESTABLISHED -j ACCEPT
+  $ipt6 -A OUTPUT -o $ext_interf -p tcp --dport $r -m state --state NEW,ESTABLISHED -j ACCEPT
+
+#  $ipt4 -A INPUT  -i $ext_interf -p tcp --sport $r -j LOG
+  $ipt4 -A INPUT  -i $ext_interf -p tcp --sport $r -m state --state     ESTABLISHED -j ACCEPT
+  $ipt6 -A INPUT  -i $ext_interf -p tcp --sport $r -m state --state     ESTABLISHED -j ACCEPT
+done

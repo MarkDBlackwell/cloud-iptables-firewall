@@ -50,7 +50,9 @@ $ /root/firewall/firewall.sh
 If there are none, then do:
 
 ```bash
-$ /etc/init.d/iptables save
+$ /etc/init.d/iptables save active
+$ /root/firewall/minimal.sh
+$ /etc/init.d/iptables save inactive
 $ /etc/init.d/iptables start
 ```
 

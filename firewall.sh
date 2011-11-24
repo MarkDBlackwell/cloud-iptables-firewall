@@ -36,10 +36,8 @@ echo "under certain conditions; see GPL-LICENSE.txt for details."
 source ./minimal.sh
 source ./ranges.shi
 
-if test -f ./unique.shi
+if test ! -f ./unique.shi
 then
-  source ./unique.shi
-else
   echo "The user must create the file, 'unique.shi', and in it"
   echo "specify these IP's regarding the External Interface:"
   echo "My external IP:"
@@ -47,8 +45,11 @@ else
   echo "  ipv6_ext_addr_my=\"<IP address (ipv6), if any>\""
   echo "Authorized Remote IP's (through the External Interface):"
   echo "  ipv4_authorized_remote_ips=\"<space-separated list of (IPv4) IP addresses>\""
+  echo "DNS Server IP:"
+  echo "  dns_server=\"<IP address (ipv4)>\""
   exit
 fi
+source ./unique.shi
 
 source ./stateless.shi
 source ./stateful.shi

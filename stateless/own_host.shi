@@ -4,7 +4,7 @@
 $ipt4 -N OWN_HOST
 $ipt6 -N OWN_HOST
 
-# Try traffic on the Bad Sources Chain (and automatically return)
+# Try traffic on the Own Host Chain (and automatically return)
 $ipt4 -A INPUT -j OWN_HOST
 $ipt6 -A INPUT -j OWN_HOST
 
