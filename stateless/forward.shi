@@ -1,0 +1,6 @@
+# Handle forwarding traffic.
+
+# Block all forwarding requests.
+$ipt4 -A FORWARD -j REJECT
+$ipt6 -A FORWARD -j REJECT
+

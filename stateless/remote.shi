@@ -1,10 +1,45 @@
 # Handle authorized remote IP's.
 
-# Add whatever other ports you want.
+# Create Remote chain.
+$ipt4 -N REMOTE
+$ipt6 -N REMOTE
 
-# Open SSH port 22
-for r in $ipv4_authorized_remote_ips
+# Try traffic on the Remote chain (and automatically return).
+$ipt4 -A INPUT  -j REMOTE
+$ipt6 -A INPUT  -j REMOTE
+
+$ipt4 -A OUTPUT -j REMOTE
+$ipt6 -A OUTPUT -j REMOTE
+
+# Remote rules.
+# TCP rules.
+common="-A REMOTE --protocol tcp"
+
+# Add whatever ports you want to open, separated by spaces.
+# Open SSH port 22.
+ports_to_open="22"
+
+for p in $ports_to_open
 do
-  $ipt4 -A INPUT  -p tcp -i $ext_interf      --source $r --dport 22 -j ACCEPT
-  $ipt4 -A OUTPUT -p tcp -o $ext_interf --destination $r --sport 22 -j ACCEPT
+  incoming="$common -i $ext_interf --dport $p --source"
+  outgoing="$common -o $ext_interf --sport $p --destination"
+  for i4 in $ipv4_authorized_remote_ips
+  do
+    $ipt4 $incoming $i4 -j ACCEPT
+    $ipt4 $outgoing $i4 -j ACCEPT
+  done
+  for i6 in $ipv6_authorized_remote_ips
+  do
+    $ipt6 $incoming $i6 -j ACCEPT
+    $ipt6 $outgoing $i6 -j ACCEPT
+  done
 done
+
+# Hide module variables.
+unset common
+unset i4
+unset i6
+unset incoming
+unset outgoing
+unset p
+unset ports_to_open

@@ -1,28 +1,50 @@
-# Handle Bad Source IP Traffic.
+# Handle bad source IP traffic.
 
-# Define Bad Ranges
-ipv4_bad_ranges="$ipv4_all_zeros $ipv4_subnet_private1 $ipv4_subnet_autoconfiguration $ipv4_subnet_private2 $ipv4_subnet_test1 $ipv4_global_6to4_anycast $ipv4_subnet_private3 $ipv4_private_multi_subnet_test $ipv4_subnet_test2 $ipv4_subnet_test3 $ipv4_global_multicast $ipv4_global_future $ipv4_limited_broadcast"
-
-# TODO: Find Bad Ranges for IPv6.
-ipv6_bad_ranges=""
-
-# Create Bad Sources Chain
+# Create Bad Sources chain.
 $ipt4 -N BAD_SOURCES
 $ipt6 -N BAD_SOURCES
 
-# Try traffic on the Bad Sources Chain (and automatically return)
+# Try traffic on the Bad Sources chain (and automatically return).
 $ipt4 -A INPUT -j BAD_SOURCES
 $ipt6 -A INPUT -j BAD_SOURCES
 
-# Block bad range IP's access to External Interface
-for r in $ipv4_bad_ranges
+# Define bad ranges.
+# Keep in numerical order, for nice listing (by iptables -L).
+ipv4_bad_ranges="
+
+$ipv4_all_zeros
+$ipv4_subnet_private1
+$ipv4_subnet_autoconfiguration
+$ipv4_subnet_private2
+$ipv4_subnet_test1
+$ipv4_global_6to4_anycast
+$ipv4_subnet_private3
+$ipv4_private_multi_subnet_test
+$ipv4_subnet_test2
+$ipv4_subnet_test3
+$ipv4_global_multicast
+$ipv4_global_future
+$ipv4_limited_broadcast
+"
+# TODO: Figure out the bad ranges, in IPv6.
+ipv6_bad_ranges=""
+
+# Bad Sources rules.
+# Block bad range IP's access to external interface.
+for r4 in $ipv4_bad_ranges
 do
-  $ipt4 -A BAD_SOURCES -i $ext_interf --source $r -j REJECT
-  $ipt4 -A BAD_SOURCES -o $ext_interf --source $r -j REJECT
+  $ipt4 -A BAD_SOURCES -i $ext_interf --source $r4 -j REJECT
+  $ipt4 -A BAD_SOURCES -o $ext_interf --source $r4 -j REJECT
 done
 
-for r in $ipv6_bad_ranges
+for r6 in $ipv6_bad_ranges
 do
-  $ipt6 -A BAD_SOURCES -i $ext_interf --source $r -j REJECT
-  $ipt6 -A BAD_SOURCES -o $ext_interf --source $r -j REJECT
+  $ipt6 -A BAD_SOURCES -i $ext_interf --source $r6 -j REJECT
+  $ipt6 -A BAD_SOURCES -o $ext_interf --source $r6 -j REJECT
 done
+
+# Hide module variables.
+unset ipv4_bad_ranges
+unset ipv6_bad_ranges
+unset r4
+unset r6

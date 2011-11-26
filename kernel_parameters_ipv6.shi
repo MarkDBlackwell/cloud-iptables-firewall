@@ -1,0 +1,17 @@
+# Set kernel parameters for IPv6.
+# Lock down IPv6
+
+# Disable all IPv6 packet forwarding
+$sysctl6 -w net/ipv6/conf/all/forwarding="0"
+
+# Don't accept Router Advertisements
+$sysctl6 -w net/ipv6/conf/eth0/accept_ra="0"
+
+# Don't accept Redirects
+$sysctl6 -w net/ipv6/conf/eth0/accept_redirects="0"
+
+# Send no Duplicate Address Detection probes
+$sysctl6 -w net/ipv6/conf/eth0/dad_transmits="0"
+
+# Send no Router Solicitations
+$sysctl6 -w net/ipv6/conf/eth0/router_solicitations="0"

@@ -1,9 +1,21 @@
-# Handle Loopback Interface traffic.
+# Handle loopback interface traffic.
 
-# On the Loopback Interface, allow IPv4 traffic only both to and from my external IP
-$ipt4 -A INPUT  -i $loopback_interf -s $ipv4_ext_addr_my -d $ipv4_ext_addr_my -j ACCEPT
-$ipt4 -A OUTPUT -o $loopback_interf -s $ipv4_ext_addr_my -d $ipv4_ext_addr_my -j ACCEPT
+# Create Loopback chain.
+$ipt4 -N LOOPBACK
+$ipt6 -N LOOPBACK
 
-# Block everything else
-$ipt4 -A INPUT  -i $loopback_interf -j REJECT
-$ipt4 -A OUTPUT -o $loopback_interf -j REJECT
+# Try loopback traffic on the Loopback chain (and automatically return).
+$ipt4 -A INPUT  -i $loopback_interf -j LOOPBACK
+$ipt6 -A INPUT  -i $loopback_interf -j LOOPBACK
+
+$ipt4 -A OUTPUT -o $loopback_interf -j LOOPBACK
+$ipt6 -A OUTPUT -o $loopback_interf -j LOOPBACK
+
+# Loopback rules.
+# Allow traffic which is both to and from my external IP.
+$ipt4 -A LOOPBACK --source $ipv4_ext_addr_my --destination $ipv4_ext_addr_my -j ACCEPT
+$ipt6 -A LOOPBACK --source $ipv6_ext_addr_my --destination $ipv6_ext_addr_my -j ACCEPT
+
+# Block everything else.
+$ipt4 -A LOOPBACK -j REJECT
+$ipt6 -A LOOPBACK -j REJECT

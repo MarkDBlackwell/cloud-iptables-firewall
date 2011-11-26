@@ -1,17 +1,38 @@
-# HTTP and HTTPS Rules
-# TCP Rules
+# Handle Hyper-Text Transfer Protocol (HTTP and HTTPS) traffic.
 
-# http://stackoverflow.com/questions/2957757/how-can-an-application-use-port-80-http-without-conflicting-with-browsers
+# See http://stackoverflow.com/questions/2957757/how-can-an-application-use-port-80-http-without-conflicting-with-browsers
+
+# Create HTTP chains.
+$ipt4 -N HTTP_IN
+$ipt6 -N HTTP_IN
+
+$ipt4 -N HTTP_OUT
+$ipt6 -N HTTP_OUT
+
+# Try traffic on the HTTP chains (and automatically return).
+# Incoming on external interface.
+$ipt4 -A INPUT -i $ext_interf -j HTTP_IN
+$ipt6 -A INPUT -i $ext_interf -j HTTP_IN
+
+# Outgoing on external interface.
+$ipt4 -A OUTPUT -o $ext_interf -j HTTP_OUT
+$ipt6 -A OUTPUT -o $ext_interf -j HTTP_OUT
 
 http_https_ports="80 443"
 
-for r in $http_https_ports
+# HTTP rules.
+# Transmission Control Protocol (TCP) rules.
+for po in $http_https_ports
 do
-#  $ipt4 -A OUTPUT -o $ext_interf -p tcp --dport $r -j LOG
-  $ipt4 -A OUTPUT -o $ext_interf -p tcp --dport $r -m state --state NEW,ESTABLISHED -j ACCEPT
-  $ipt6 -A OUTPUT -o $ext_interf -p tcp --dport $r -m state --state NEW,ESTABLISHED -j ACCEPT
+# $ipt4 -A HTTP_OUT --protocol tcp --dport $po -j LOG
+  $ipt4 -A HTTP_OUT --protocol tcp --dport $po -m state --state ESTABLISHED,NEW -j ACCEPT
+  $ipt6 -A HTTP_OUT --protocol tcp --dport $po -m state --state ESTABLISHED,NEW -j ACCEPT
 
-#  $ipt4 -A INPUT  -i $ext_interf -p tcp --sport $r -j LOG
-  $ipt4 -A INPUT  -i $ext_interf -p tcp --sport $r -m state --state     ESTABLISHED -j ACCEPT
-  $ipt6 -A INPUT  -i $ext_interf -p tcp --sport $r -m state --state     ESTABLISHED -j ACCEPT
+# $ipt4 -A HTTP_IN  --protocol tcp --sport $po -j LOG
+  $ipt4 -A HTTP_IN  --protocol tcp --sport $po -m state --state ESTABLISHED     -j ACCEPT
+  $ipt6 -A HTTP_IN  --protocol tcp --sport $po -m state --state ESTABLISHED     -j ACCEPT
 done
+
+# Hide module variables.
+unset http_https_ports
+unset po

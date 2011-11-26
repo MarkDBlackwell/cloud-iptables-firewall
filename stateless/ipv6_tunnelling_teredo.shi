@@ -1,15 +1,16 @@
 # Handle Teredo tunnelling of IPv6 over IPv4.
 
-# To block IPv6 access to (and from) the Internet, tunnelled through Teredo, drop all IPv4 traffic with the source or destination UDP port of 3544, per:
+# To block IPv6 access from (and to) the Internet, tunnelled through Teredo, drop all IPv4 traffic with the source or destination UDP port of 3544, per:
 # http://technet.microsoft.com/en-us/library/bb726956.aspx
 # http://en.wikipedia.org/wiki/Teredo_tunneling
 
-# Create Teredo Chain
+# Create Teredo chain.
 $ipt4 -N TEREDO
 
-# Try Traffic on the Teredo Chain (and automatically return)
-$ipt4 -A INPUT  -p udp -j TEREDO
-$ipt4 -A OUTPUT -p udp -j TEREDO
+# Try Teredo traffic on the Teredo chain (and automatically return).
+$ipt4 -A INPUT  -j TEREDO
+$ipt4 -A OUTPUT -j TEREDO
 
+# Teredo rules.
 $ipt4 -A TEREDO -p udp      --source-port 3544 -j REJECT
 $ipt4 -A TEREDO -p udp --destination-port 3544 -j REJECT

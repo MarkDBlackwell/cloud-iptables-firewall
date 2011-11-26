@@ -1,17 +1,17 @@
-# Handle ISATAP (including 6in4 and 6to4) tunnelling of IPv6 over IPv4.
+# Handle Intra-Site Automatic Tunnel Addressing Protocol (ISATAP, including 6in4 and 6to4) tunnelling of IPv6 over IPv4.
 
-# To block IPv6 access to (and from) the Internet, using ISATAP tunnelling, drop all IPv4 protocol 41 packets, per:
+# To block IPv6 access from (and to) the Internet which uses ISATAP tunnelling, drop all IPv4 protocol 41 packets, per:
 # http://technet.microsoft.com/en-us/library/bb726956.aspx
 # http://en.wikipedia.org/wiki/ISATAP
 # http://en.wikipedia.org/wiki/6in4
 # http://en.wikipedia.org/wiki/6to4
 
-# Create ISATAP Chain
+# Create ISATAP chain
 $ipt4 -N ISATAP
 
-# Try Traffic on the ISATAP Chain (and automatically return)
-$ipt4 -A INPUT  -p 41 -j ISATAP
-$ipt4 -A OUTPUT -p 41 -j ISATAP
+# Try traffic on the ISATAP chain (and automatically return).
+$ipt4 -A INPUT  -j ISATAP
+$ipt4 -A OUTPUT -j ISATAP
 
-# Block ISATAP traffic
-$ipt4 -A ISATAP -j REJECT
+# ISATAP rules.
+$ipt4 -A ISATAP -p 41 -j REJECT

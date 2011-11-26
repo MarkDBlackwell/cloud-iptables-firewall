@@ -1,31 +1,43 @@
-# Handle Broadcast IP Traffic.
+# Handle broadcast IP traffic.
 
-# Define Broadcast Ranges
-ipv4_broadcast_ranges="$ipv4_limited_broadcast $ipv4_subnet_broadcast"
-ipv6_broadcast_ranges=""
-
-# Create Broadcast Chain
+# Create Broadcast chain.
 $ipt4 -N BROADCAST
 $ipt6 -N BROADCAST
 
-# Try traffic on Broadcast Chain (and automatically return)
-# Incoming on External Interface
-$ipt4 -A INPUT -i $ext_interf -j BROADCAST
-$ipt6 -A INPUT -i $ext_interf -j BROADCAST
+# Try traffic on the Broadcast chain (and automatically return).
+# Incoming on external interface.
+$ipt4 -A INPUT  -i $ext_interf -j BROADCAST
+$ipt6 -A INPUT  -i $ext_interf -j BROADCAST
 
-# Outgoing on External Interface
+# Outgoing on external interface.
 $ipt4 -A OUTPUT -o $ext_interf -j BROADCAST
 $ipt6 -A OUTPUT -o $ext_interf -j BROADCAST
 
-# Block Broadcast Range IP's access to External Interface
-for r in $ipv4_broadcast_ranges
+# Define broadcast ranges.
+ipv4_broadcast_ranges="
+
+$ipv4_limited_broadcast
+$ipv4_subnet_broadcast
+"
+# TODO: Figure out the broadcast ranges, in IPv6.
+ipv6_broadcast_ranges=""
+
+# Broadcast rules.
+# Block broadcast range IP's access to the external interface.
+for r4 in $ipv4_broadcast_ranges
 do
-  $ipt4 -A BROADCAST      --source $r -j DROP
-  $ipt4 -A BROADCAST --destination $r -j DROP
+  $ipt4 -A BROADCAST      --source $r4 -j DROP
+  $ipt4 -A BROADCAST --destination $r4 -j DROP
 done
 
-for r in $ipv6_broadcast_ranges
+for r6 in $ipv6_broadcast_ranges
 do
-  $ipt6 -A BROADCAST      --source $r -j DROP
-  $ipt6 -A BROADCAST --destination $r -j DROP
+  $ipt6 -A BROADCAST      --source $r6 -j DROP
+  $ipt6 -A BROADCAST --destination $r6 -j DROP
 done
+
+# Hide module variables.
+unset ipv4_broadcast_ranges
+unset ipv6_broadcast_ranges
+unset r4
+unset r6

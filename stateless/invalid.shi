@@ -1,4 +1,16 @@
-# Handle Traffic in the INVALID state.
+# Handle traffic in the INVALID state.
 
-$ipt4 -A INPUT -m state --state INVALID -j REJECT
-$ipt6 -A INPUT -m state --state INVALID -j REJECT
+# Create Invalid Traffic chain.
+$ipt4 -N INVALID
+$ipt6 -N INVALID
+
+# Try invalid traffic on the Invalid Traffic chain (and automatically return).
+$ipt4 -A INPUT  -j INVALID
+$ipt6 -A INPUT  -j INVALID
+
+$ipt4 -A OUTPUT -j INVALID
+$ipt6 -A OUTPUT -j INVALID
+
+# Invalid Traffic rules.
+$ipt4 -A INVALID -m state --state INVALID -j REJECT
+$ipt6 -A INVALID -m state --state INVALID -j REJECT

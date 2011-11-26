@@ -1,14 +1,35 @@
-# DNS Rules
+# Handle Domain Name System (DNS) traffic.
+
+# Create DNS chains.
+$ipt4 -N DNS_IN
+$ipt6 -N DNS_IN
+
+$ipt4 -N DNS_OUT
+$ipt6 -N DNS_OUT
+
+# Try traffic on the DNS chains (and automatically return).
+# Incoming on external interface.
+$ipt4 -A INPUT -i $ext_interf -j DNS_IN
+$ipt6 -A INPUT -i $ext_interf -j DNS_IN
+
+# Outgoing on external interface.
+$ipt4 -A OUTPUT -o $ext_interf -j DNS_OUT
+$ipt6 -A OUTPUT -o $ext_interf -j DNS_OUT
 
 dns_protocols="udp tcp"
 
+# DNS rules.
 for p in $dns_protocols
 do
-#  $ipt4 -A OUTPUT -o $ext_interf -p $p --dport 53 -j LOG
-  $ipt4 -A OUTPUT -o $ext_interf -p $p --dport 53 --destination $dns_server -m state --state NEW,ESTABLISHED -j ACCEPT
-  $ipt6 -A OUTPUT -o $ext_interf -p $p --dport 53 --destination $dns_server -m state --state NEW,ESTABLISHED -j ACCEPT
+# $ipt4 -A DNS_OUT --protocol $p --dport 53 -j LOG
+  $ipt4 -A DNS_OUT --protocol $p --dport 53 --destination $dns_server -m state --state ESTABLISHED,NEW -j ACCEPT
+  $ipt6 -A DNS_OUT --protocol $p --dport 53 --destination $dns_server -m state --state ESTABLISHED,NEW -j ACCEPT
 
-#  $ipt4 -A INPUT  -i $ext_interf -p $p --sport 53 -j LOG
-  $ipt4 -A INPUT  -i $ext_interf -p $p --sport 53 --source $dns_server -m state --state     ESTABLISHED -j ACCEPT
-  $ipt6 -A INPUT  -i $ext_interf -p $p --sport 53 --source $dns_server -m state --state     ESTABLISHED -j ACCEPT
+# $ipt4 -A DNS_IN  --protocol $p --sport 53 -j LOG
+  $ipt4 -A DNS_IN  --protocol $p --sport 53 --source      $dns_server -m state --state ESTABLISHED     -j ACCEPT
+  $ipt6 -A DNS_IN  --protocol $p --sport 53 --source      $dns_server -m state --state ESTABLISHED     -j ACCEPT
 done
+
+# Hide module variables.
+unset dns_protocols
+unset p

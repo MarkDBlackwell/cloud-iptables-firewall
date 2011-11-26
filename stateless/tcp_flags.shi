@@ -1,25 +1,53 @@
-# Handle Traffic with Bad Flags.
+# Handle traffic with bad flags.
 
-# Create Bad TCP Flags Chain
+# References:
+# http://security.rbaumann.net/scans.php?sel=1
+# http://nmap.org/
+# http://support.novell.com/techcenter/articles/nc2001_03.html
+
+# Create Bad TCP Flags chain.
 $ipt4 -N TCP_FLAGS
 $ipt6 -N TCP_FLAGS
 
-# Try TCP Traffic on the Bad Flags Chain (and automatically return)
-$ipt4 -A INPUT -p tcp -j TCP_FLAGS
-$ipt6 -A INPUT -p tcp -j TCP_FLAGS
+# Try traffic on the Bad TCP Flags chain (and automatically return).
+$ipt4 -A INPUT  -j TCP_FLAGS
+$ipt6 -A INPUT  -j TCP_FLAGS
 
-$ipt4 -A OUTPUT -p tcp -j TCP_FLAGS
-$ipt6 -A OUTPUT -p tcp -j TCP_FLAGS
+$ipt4 -A OUTPUT -j TCP_FLAGS
+$ipt6 -A OUTPUT -j TCP_FLAGS
 
-# Rules for traffic with bad flags
-# To use extension, 'tcp-flags', must re-specify, '-p tcp'.
-$ipt4 -A TCP_FLAGS -p tcp --tcp-flags SYN,FIN SYN,FIN -j REJECT
-$ipt4 -A TCP_FLAGS -p tcp --tcp-flags SYN,RST SYN,RST -j REJECT
-$ipt4 -A TCP_FLAGS -p tcp --tcp-flags SYN,FIN,PSH SYN,FIN,PSH -j REJECT
-$ipt4 -A TCP_FLAGS -p tcp --tcp-flags SYN,FIN,RST SYN,FIN,RST -j REJECT
-$ipt4 -A TCP_FLAGS -p tcp --tcp-flags SYN,FIN,RST,PSH SYN,FIN,RST,PSH -j REJECT
-$ipt4 -A TCP_FLAGS -p tcp --tcp-flags FIN FIN -j REJECT
-$ipt4 -A TCP_FLAGS -p tcp --tcp-flags ALL NONE -j REJECT
-$ipt4 -A TCP_FLAGS -p tcp --tcp-flags ALL ALL -j REJECT
-$ipt4 -A TCP_FLAGS -p tcp --tcp-flags ALL FIN,URG,PSH -j REJECT # Nmap:Xmas
-$ipt4 -A TCP_FLAGS -p tcp --tcp-flags ALL SYN,RST,ACK,FIN,URG -j REJECT # Merry Xmas
+# Bad TCP Flags rules.
+# Block meaningless requests used by scanners.
+for i in $ipt4 $ipt6
+do
+  common="$i -A TCP_FLAGS --protocol tcp --tcp-flags"
+
+  # No flags.
+  $common ALL NONE -j LOG --log-prefix "null flag "
+  $common ALL NONE -j DROP
+
+  # Xmas Tree.
+  $common FIN,PSH,URG FIN,PSH,URG -j LOG --log-prefix "Xmas flag "
+  $common FIN,PSH,URG FIN,PSH,URG -j DROP
+
+  # Meaningless, regarding sequence numbering:
+  # Start and finish.
+  $common SYN,FIN SYN,FIN -j LOG --log-prefix "SF flag "
+  $common SYN,FIN SYN,FIN -j DROP
+
+  # Start and reset.
+  $common SYN,RST SYN,RST -j LOG --log-prefix "SR flag "
+  $common SYN,RST SYN,RST -j DROP
+
+  # Finish and reset.
+  $common FIN,RST FIN,RST -j LOG --log-prefix "FR flag "
+  $common FIN,RST FIN,RST -j DROP
+
+  # Only finish.
+  $common ALL FIN -j LOG --log-prefix "F flag "
+  $common ALL FIN -j DROP
+done
+
+# Hide module variables.
+unset common
+unset i

@@ -1,4 +1,4 @@
-# Place stateful rules here.
+# Stateful rules.
 
 source stateful/dns.shi
 source stateful/http_https.shi

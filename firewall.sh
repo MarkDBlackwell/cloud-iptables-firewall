@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# firewall.sh - firewall script for a VM running Debian lenny
+# firewall.sh - firewall script for a VM running Linux Debian lenny
 
 # Copyright (C) 2011 Mark D. Blackwell
 
@@ -34,7 +34,6 @@ echo "This is free software, and you are welcome to redistribute it"
 echo "under certain conditions; see GPL-LICENSE.txt for details."
 
 source ./minimal.sh
-source ./ranges.shi
 
 if test ! -f ./unique.shi
 then
@@ -51,6 +50,7 @@ then
 fi
 source ./unique.shi
 
+source ./ranges.shi
 source ./stateless.shi
 source ./stateful.shi
 
@@ -58,5 +58,5 @@ source ./stateful.shi
 $ipt4 -nv -L
 $ipt6 -nv -L
 
-# While debugging, halt afterward.
+# While debugging, block all packets.
 #/etc/init.d/iptables halt
