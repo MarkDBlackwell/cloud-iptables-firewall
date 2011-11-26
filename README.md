@@ -1,6 +1,6 @@
 #cloud-iptables-firewall
 
-Firewall script for a cloud instance running Debian, using iptables.
+Firewall script for a cloud instance running Debian Linux, using iptables.
 
 Legal note: THIS INFORMATION IS FOR EDUCATIONAL PURPOSES ONLY; I SHALL NOT BE HELD RESPONSIBLE FOR ANY DAMAGES POSSIBLY INCURRED!
 
@@ -64,13 +64,15 @@ $ /etc/init.d/iptables save active
 $ /etc/init.d/iptables start
 ```
 
-To make, save and invoke the locked down firewall:
+To make, save and invoke a locked-down firewall:
 
 ```bash
 $ /root/firewall/minimal.sh
 $ /etc/init.d/iptables save inactive
 $ /etc/init.d/iptables stop
 ```
+
+##Other
 
 To see all listening (open) ports at any time:
 
