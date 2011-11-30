@@ -51,9 +51,10 @@ $ mkdir /root/firewall
 $ cd /root/firewall
 ```
 
-Download the script and upload it to your VM. Referring to, 'firewall.sh', customize the file, 'unique.shi'. Then, reviewing the output for error messages:
+As root, download the script and upload it to your VM. Referring to, 'firewall.sh', customize the file, 'unique.shi'. Then, reviewing the output for error messages:
 
 ```bash
+$ chmod u+x `find . -name '*.sh*'`
 $ /root/firewall/firewall.sh
 ```
 
