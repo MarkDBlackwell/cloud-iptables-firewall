@@ -2,3 +2,4 @@
 
 source stateful/dns.shi
 source stateful/http_https.shi
+source stateful/ssh.shi
