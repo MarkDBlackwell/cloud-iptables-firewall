@@ -16,21 +16,12 @@ $ipt6 -A INPUT -i $ext_interf -j SSH_IN
 $ipt4 -A OUTPUT -o $ext_interf -j SSH_OUT
 $ipt6 -A OUTPUT -o $ext_interf -j SSH_OUT
 
-SSH_SSHs_ports="80 443"
-
 # SSH rules.
 # Transmission Control Protocol (TCP) rules.
-for po in $SSH_SSHs_ports
-do
-# $ipt4 -A SSH_OUT --protocol tcp --dport $po -j LOG
-  $ipt4 -A SSH_OUT --protocol tcp --dport $po -m state --state ESTABLISHED,NEW -j ACCEPT
-  $ipt6 -A SSH_OUT --protocol tcp --dport $po -m state --state ESTABLISHED,NEW -j ACCEPT
+# $ipt4 -A SSH_OUT --protocol tcp --dport 22 -j LOG
+  $ipt4 -A SSH_OUT --protocol tcp --dport 22 -m state --state ESTABLISHED,NEW -j ACCEPT
+  $ipt6 -A SSH_OUT --protocol tcp --dport 22 -m state --state ESTABLISHED,NEW -j ACCEPT
 
-# $ipt4 -A SSH_IN  --protocol tcp --sport $po -j LOG
-  $ipt4 -A SSH_IN  --protocol tcp --sport $po -m state --state ESTABLISHED     -j ACCEPT
-  $ipt6 -A SSH_IN  --protocol tcp --sport $po -m state --state ESTABLISHED     -j ACCEPT
-done
-
-# Hide module variables.
-unset SSH_SSHs_ports
-unset po
+# $ipt4 -A SSH_IN  --protocol tcp --sport 22 -j LOG
+  $ipt4 -A SSH_IN  --protocol tcp --sport 22 -m state --state ESTABLISHED     -j ACCEPT
+  $ipt6 -A SSH_IN  --protocol tcp --sport 22 -m state --state ESTABLISHED     -j ACCEPT
