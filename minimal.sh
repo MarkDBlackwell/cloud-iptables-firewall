@@ -38,6 +38,9 @@ fi
 loopback_interf="lo"
 ext_interf="eth0" # External Interface
 
+# Allow traffic after halt
+/etc/init.d/iptables clear
+
 # Set kernel parameters
 source ./kernel_parameters_ipv4.shi
 source ./kernel_parameters_ipv6.shi
